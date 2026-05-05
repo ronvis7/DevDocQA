@@ -34,5 +34,9 @@ jobs:
         # 不需要 DeepSeek 的测试都会跑；需要 API key 的会按现有 skipif 自动跳过
         run: uv run pytest -v --tb=short
         env:
-          # 让 HuggingFace 镜像可达（CI 在海外，hf-mirror 也能正常工作）
+          # shared/config.py 在 import 时校验 DEEPSEEK_API_KEY；
+          # CI 没真实 key，给一个非 sk-xxx 前缀的占位让 import 通过；
+          # 真正调 DeepSeek 的测试本来就 skip / 不在 CI 跑。
+          DEEPSEEK_API_KEY: ci-dummy-key-not-for-real-calls
+          # HuggingFace endpoint（hf-mirror 在 CI 节点也能访问，作为 fallback）
           HF_ENDPOINT: https://hf-mirror.com
