@@ -25,7 +25,8 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dependencies
-        run: uv sync --frozen
+        # --all-groups 才会装上 pytest / ruff（在 dependency-groups 里）
+        run: uv sync --frozen --all-groups
 
       - name: Ruff lint
         run: uv run ruff check .
