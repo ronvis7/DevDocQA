@@ -17,7 +17,7 @@ from shared import get_llm
 
 def demo_passthrough() -> None:
     print("=" * 60)
-    print("① RunnablePassthrough —— 原样透传，常用于把"原始输入"塞进 dict 的某一格")
+    print("① RunnablePassthrough —— 原样透传，常用于把「原始输入」塞进 dict 的某一格")
     print("=" * 60)
     chain = RunnablePassthrough()
     print(chain.invoke("hello"))  # → "hello"
