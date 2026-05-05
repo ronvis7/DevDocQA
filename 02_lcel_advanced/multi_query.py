@@ -32,6 +32,7 @@ def main() -> None:
 
     # 打开 LangChain 的日志看 LLM 改写出了哪些查询
     import logging
+
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 

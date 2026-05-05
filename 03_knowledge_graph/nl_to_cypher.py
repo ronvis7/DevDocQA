@@ -37,7 +37,7 @@ def main() -> None:
         cypher_llm=get_llm(temperature=0.0),
         qa_llm=get_llm(temperature=0.0),
         graph=graph,
-        verbose=True,             # 打印 LLM 生成的 Cypher
+        verbose=True,  # 打印 LLM 生成的 Cypher
         return_intermediate_steps=True,
         # 安全开关：不允许执行写操作
         allow_dangerous_requests=True,  # 关闭 LangChain 的安全提示（学习项目本就只读）

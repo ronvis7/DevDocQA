@@ -78,6 +78,7 @@ def _safe_import_agent():
 
 # ---------- Tab 处理函数 ----------
 
+
 def fn_basic_rag(question: str):
     try:
         chain = _safe_import_basic()
@@ -146,36 +147,53 @@ def fn_agent(question: str, history: list):
 
 # ---------- 界面布局 ----------
 
-with gr.Blocks(title="DevDocQA \u00b7 \u6280\u672f\u6587\u6863\u667a\u80fd\u95ee\u7b54", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# \U0001f4da DevDocQA\nLangChain + RAG + \u77e5\u8bc6\u56fe\u8c31 \u00b7 \u6280\u672f\u6587\u6863\u667a\u80fd\u95ee\u7b54\u7cfb\u7edf")
+with gr.Blocks(
+    title="DevDocQA \u00b7 \u6280\u672f\u6587\u6863\u667a\u80fd\u95ee\u7b54", theme=gr.themes.Soft()
+) as demo:
+    gr.Markdown(
+        "# \U0001f4da DevDocQA\nLangChain + RAG + \u77e5\u8bc6\u56fe\u8c31 \u00b7 \u6280\u672f\u6587\u6863\u667a\u80fd\u95ee\u7b54\u7cfb\u7edf"
+    )
 
     with gr.Tab("1. \u57fa\u7840 RAG"):
         gr.Markdown("LCEL 4 \u4ef6\u5957\uff1a`retriever | format | prompt | llm | parser`")
-        q1 = gr.Textbox(label="\u95ee\u9898", value="React \u4e2d useEffect \u7684\u4f9d\u8d56\u6570\u7ec4\u600e\u4e48\u7528\uff1f")
+        q1 = gr.Textbox(
+            label="\u95ee\u9898", value="React \u4e2d useEffect \u7684\u4f9d\u8d56\u6570\u7ec4\u600e\u4e48\u7528\uff1f"
+        )
         out1 = gr.Textbox(label="\u7b54\u6848", lines=6)
         gr.Button("\u63d0\u95ee").click(fn_basic_rag, q1, out1)
 
     with gr.Tab("2. LCEL \u6d41\u5f0f"):
         gr.Markdown("\u6f14\u793a `.stream()` \u2014\u2014 token \u4e00\u4e2a\u4e2a\u5410\u51fa\u6765")
-        q2 = gr.Textbox(label="\u4e3b\u9898", value="\u7528 100 \u5b57\u4ecb\u7ecd FastAPI \u7684\u4f9d\u8d56\u6ce8\u5165\u673a\u5236\u3002")
+        q2 = gr.Textbox(
+            label="\u4e3b\u9898",
+            value="\u7528 100 \u5b57\u4ecb\u7ecd FastAPI \u7684\u4f9d\u8d56\u6ce8\u5165\u673a\u5236\u3002",
+        )
         out2 = gr.Textbox(label="\u8f93\u51fa", lines=6)
         gr.Button("\u751f\u6210").click(fn_streaming, q2, out2)
 
     with gr.Tab("3. NL \u2192 Cypher"):
-        gr.Markdown("\u81ea\u7136\u8bed\u8a00 \u2192 Cypher \u2192 \u81ea\u7136\u8bed\u8a00\u7b54\u6848\uff08\u9700\u8981 Neo4j\uff09")
+        gr.Markdown(
+            "\u81ea\u7136\u8bed\u8a00 \u2192 Cypher \u2192 \u81ea\u7136\u8bed\u8a00\u7b54\u6848\uff08\u9700\u8981 Neo4j\uff09"
+        )
         q3 = gr.Textbox(label="\u95ee\u9898", value="Vue \u4e2d\u6709\u54ea\u4e9b\u54cd\u5e94\u5f0f API\uff1f")
         out3 = gr.Textbox(label="\u7b54\u6848", lines=6)
         gr.Button("\u67e5\u8be2").click(fn_nl_to_cypher, q3, out3)
 
     with gr.Tab("4. KG-RAG \u878d\u5408"):
         gr.Markdown("\u5411\u91cf + \u56fe\u8c31 **\u5e76\u53d1**\u68c0\u7d22\uff0c\u878d\u5408\u56de\u7b54")
-        q4 = gr.Textbox(label="\u95ee\u9898", value="FastAPI \u4e2d\u4f9d\u8d56\u6ce8\u5165\u548c Pydantic \u6a21\u578b\u662f\u4ec0\u4e48\u5173\u7cfb\uff1f")
+        q4 = gr.Textbox(
+            label="\u95ee\u9898",
+            value="FastAPI \u4e2d\u4f9d\u8d56\u6ce8\u5165\u548c Pydantic \u6a21\u578b\u662f\u4ec0\u4e48\u5173\u7cfb\uff1f",
+        )
         out4 = gr.Textbox(label="\u7b54\u6848", lines=8)
         gr.Button("\u63d0\u95ee").click(fn_kg_rag, q4, out4)
 
     with gr.Tab("5. ReAct Agent"):
         gr.Markdown("LLM \u81ea\u4e3b\u51b3\u5b9a\u8c03\u7528\u54ea\u4e2a\u5de5\u5177")
-        q5 = gr.Textbox(label="\u95ee\u9898", value="React \u548c Vue \u5728\u72b6\u6001\u7ba1\u7406\u4e0a\u6709\u4ec0\u4e48\u4e0d\u540c\uff1f")
+        q5 = gr.Textbox(
+            label="\u95ee\u9898",
+            value="React \u548c Vue \u5728\u72b6\u6001\u7ba1\u7406\u4e0a\u6709\u4ec0\u4e48\u4e0d\u540c\uff1f",
+        )
         out5 = gr.Textbox(label="\u7b54\u6848", lines=6)
         trace = gr.Textbox(label="\u5de5\u5177\u8c03\u7528\u8f68\u8ff9", lines=6)
         gr.Button("\u63d0\u95ee").click(fn_agent, [q5, gr.State([])], [out5, trace])

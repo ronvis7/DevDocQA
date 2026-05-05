@@ -17,16 +17,18 @@ from langchain_core.runnables import RunnableLambda
 from shared import get_embedding, get_llm, settings
 
 # ① 改写链：历史 + 当前问题 → 独立问题
-rewrite_prompt = ChatPromptTemplate.from_messages([
-    (
-        "system",
-        "下面是用户与助手的对话历史，以及用户的最新提问。"
-        "请把最新提问改写为一个**脱离上下文也能理解**的独立问题。"
-        "只输出改写后的问题，不要输出多余内容。",
-    ),
-    MessagesPlaceholder("history"),
-    ("human", "{question}"),
-])
+rewrite_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "下面是用户与助手的对话历史，以及用户的最新提问。"
+            "请把最新提问改写为一个**脱离上下文也能理解**的独立问题。"
+            "只输出改写后的问题，不要输出多余内容。",
+        ),
+        MessagesPlaceholder("history"),
+        ("human", "{question}"),
+    ]
+)
 
 
 def build_chain():
@@ -43,25 +45,31 @@ def build_chain():
     def format_docs(docs):
         return "\n\n".join(d.page_content for d in docs)
 
-    qa_prompt = ChatPromptTemplate.from_messages([
-        ("system", "根据 <context> 回答用户问题。\n\n<context>\n{context}\n</context>"),
-        MessagesPlaceholder("history"),
-        ("human", "{question}"),
-    ])
+    qa_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "根据 <context> 回答用户问题。\n\n<context>\n{context}\n</context>"),
+            MessagesPlaceholder("history"),
+            ("human", "{question}"),
+        ]
+    )
 
     # ② 完整链：先改写 → 检索 → 拼上下文 → 带历史问答
     chain = (
-        RunnableLambda(lambda x: {
-            "history": x["history"],
-            "question": x["question"],
-            "standalone": rewrite_chain.invoke({"history": x["history"], "question": x["question"]}),
-        })
-        | RunnableLambda(lambda x: {
-            "history": x["history"],
-            "question": x["question"],
-            "context": format_docs(retriever.invoke(x["standalone"])),
-            "_standalone": x["standalone"],  # 调试用
-        })
+        RunnableLambda(
+            lambda x: {
+                "history": x["history"],
+                "question": x["question"],
+                "standalone": rewrite_chain.invoke({"history": x["history"], "question": x["question"]}),
+            }
+        )
+        | RunnableLambda(
+            lambda x: {
+                "history": x["history"],
+                "question": x["question"],
+                "context": format_docs(retriever.invoke(x["standalone"])),
+                "_standalone": x["standalone"],  # 调试用
+            }
+        )
         | RunnableLambda(lambda x: (print(f"  [改写为] {x['_standalone']}"), x)[1])  # 打印改写结果
         | qa_prompt
         | llm
@@ -76,7 +84,7 @@ def main() -> None:
 
     rounds = [
         "孙悟空是谁？",
-        "他的师父是谁？",        # ← 这里"他"必须靠改写才能检索到
+        "他的师父是谁？",  # ← 这里"他"必须靠改写才能检索到
         "他们师徒一共去过几个国家？",
     ]
 

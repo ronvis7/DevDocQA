@@ -22,9 +22,7 @@ load_dotenv(PROJECT_ROOT / ".env")
 def _required(key: str) -> str:
     value = os.getenv(key)
     if not value or value.startswith("sk-xxx"):
-        raise RuntimeError(
-            f"环境变量 {key} 未配置。请复制 .env.example 到 .env 并填入真实 key。"
-        )
+        raise RuntimeError(f"环境变量 {key} 未配置。请复制 .env.example 到 .env 并填入真实 key。")
     return value
 
 

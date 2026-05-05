@@ -44,7 +44,9 @@ def main() -> None:
                     MERGE (e:Entity {name: $name})
                     ON CREATE SET e.type = $type, e.source = $source
                     """,
-                    name=ent["name"], type=ent["type"], source=source,
+                    name=ent["name"],
+                    type=ent["type"],
+                    source=source,
                 )
                 type_counter[ent["type"]] += 1
 
@@ -58,8 +60,10 @@ def main() -> None:
                     MERGE (h)-[r:REL {type: $rel_type}]->(t)
                     ON CREATE SET r.source = $source
                     """,
-                    head=rel["head"], tail=rel["tail"],
-                    rel_type=rel["relation"], source=source,
+                    head=rel["head"],
+                    tail=rel["tail"],
+                    rel_type=rel["relation"],
+                    source=source,
                 )
                 rel_counter[rel["relation"]] += 1
 

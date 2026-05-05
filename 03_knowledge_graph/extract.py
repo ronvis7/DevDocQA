@@ -17,17 +17,19 @@ from pydantic import BaseModel, Field
 
 from shared import get_llm, load_docs_from_dir, settings
 
-
 # ---------- ① Pydantic schema：告诉 LLM 我们要什么形状 ----------
+
 
 class Entity(BaseModel):
     """图谱中的一个节点。"""
+
     name: str = Field(description="实体名称，如「孙悟空」「花果山」")
     type: str = Field(description="实体类型：人物 / 地点 / 组织 / 物品 / 事件 之一")
 
 
 class Relation(BaseModel):
     """图谱中的一条边。head --[relation]--> tail。"""
+
     head: str = Field(description="关系起点的实体名称")
     relation: str = Field(description="关系类型，如「师父」「居住于」「攻打」")
     tail: str = Field(description="关系终点的实体名称")
@@ -35,24 +37,27 @@ class Relation(BaseModel):
 
 class Triples(BaseModel):
     """从一段文本中抽到的所有三元组。"""
+
     entities: list[Entity] = Field(description="文本中出现的所有命名实体（去重）")
     relations: list[Relation] = Field(description="文本中体现的所有实体间关系")
 
 
 # ---------- ② 构造抽取链 ----------
 
-EXTRACT_PROMPT = ChatPromptTemplate.from_messages([
-    (
-        "system",
-        "你是一个知识图谱抽取专家。给定中文文本，请抽取其中出现的实体和关系。\n"
-        "要求：\n"
-        "1. 实体名称使用文中出现的原词，避免归并不同名（如「悟空」和「孙悟空」按文中所写）\n"
-        "2. 关系动词要简洁（2-4 字最佳）\n"
-        "3. 只抽取文中**明确**体现的事实，不要推断\n"
-        "4. 同一对实体的多条关系都要列出",
-    ),
-    ("human", "文本：\n{text}"),
-])
+EXTRACT_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "你是一个知识图谱抽取专家。给定中文文本，请抽取其中出现的实体和关系。\n"
+            "要求：\n"
+            "1. 实体名称使用文中出现的原词，避免归并不同名（如「悟空」和「孙悟空」按文中所写）\n"
+            "2. 关系动词要简洁（2-4 字最佳）\n"
+            "3. 只抽取文中**明确**体现的事实，不要推断\n"
+            "4. 同一对实体的多条关系都要列出",
+        ),
+        ("human", "文本：\n{text}"),
+    ]
+)
 
 
 def build_extractor():
@@ -62,6 +67,7 @@ def build_extractor():
 
 
 # ---------- ③ CLI：抽 sample_docs 里所有文档 ----------
+
 
 def main() -> None:
     extractor = build_extractor()
@@ -76,11 +82,13 @@ def main() -> None:
         print(f"🔎 抽取：{doc.metadata['source']}（{len(text)} 字）...")
         result: Triples = extractor.invoke({"text": text})
         print(f"   → {len(result.entities)} 个实体，{len(result.relations)} 条关系")
-        all_triples.append({
-            "source": doc.metadata["source"],
-            "entities": [e.model_dump() for e in result.entities],
-            "relations": [r.model_dump() for r in result.relations],
-        })
+        all_triples.append(
+            {
+                "source": doc.metadata["source"],
+                "entities": [e.model_dump() for e in result.entities],
+                "relations": [r.model_dump() for r in result.relations],
+            }
+        )
 
     out_path = settings.project_root / "data" / "triples.json"
     out_path.write_text(

@@ -35,15 +35,17 @@ def build_chain():
     retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
 
     # 2. prompt：用 ChatPromptTemplate 留出 {context} 和 {question} 两个槽位
-    prompt = ChatPromptTemplate.from_messages([
-        (
-            "system",
-            "你是严谨的问答助手。仅根据 <context> 中的内容回答问题。"
-            "如果上下文里没有相关信息，请明确回答「资料中未提及」，不要编造。\n\n"
-            "<context>\n{context}\n</context>",
-        ),
-        ("human", "{question}"),
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "你是严谨的问答助手。仅根据 <context> 中的内容回答问题。"
+                "如果上下文里没有相关信息，请明确回答「资料中未提及」，不要编造。\n\n"
+                "<context>\n{context}\n</context>",
+            ),
+            ("human", "{question}"),
+        ]
+    )
 
     # 3. llm：DeepSeek
     llm = get_llm(temperature=0.0)

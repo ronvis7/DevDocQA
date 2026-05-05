@@ -44,16 +44,18 @@ def _format_context(payload: dict) -> str:
     return "\n".join(parts) if parts else "（未检索到相关资料）"
 
 
-PROMPT = ChatPromptTemplate.from_messages([
-    (
-        "system",
-        "你是知识问答助手。下面 <context> 既包含原文片段，也包含结构化的"
-        "知识图谱事实。请综合两类信息回答用户问题，并在每个关键论断后用方括号"
-        "标注信息来源类型，例如 [片段] 或 [图谱]。如果信息不足，明确说明。\n\n"
-        "<context>\n{context}\n</context>",
-    ),
-    ("human", "{question}"),
-])
+PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "你是知识问答助手。下面 <context> 既包含原文片段，也包含结构化的"
+            "知识图谱事实。请综合两类信息回答用户问题，并在每个关键论断后用方括号"
+            "标注信息来源类型，例如 [片段] 或 [图谱]。如果信息不足，明确说明。\n\n"
+            "<context>\n{context}\n</context>",
+        ),
+        ("human", "{question}"),
+    ]
+)
 
 
 def build_chain():

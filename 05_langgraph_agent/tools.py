@@ -11,10 +11,10 @@ LangGraph 的 Agent 不是预定义的"先检索再生成"管道，而是**让 L
 
 from __future__ import annotations
 
-from langchain_core.tools import tool
-
 # 复用第 4 节的两个检索函数（已经写好的逻辑直接拿来用）
 from importlib import import_module
+
+from langchain_core.tools import tool
 
 _hybrid = import_module("04_kg_rag.hybrid")  # 目录名以数字开头不能 import as identifier
 

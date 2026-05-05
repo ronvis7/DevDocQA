@@ -22,7 +22,6 @@ from shared import get_llm
 
 from .tools import graph_search, vector_search
 
-
 SYSTEM_PROMPT = """你是知识助手。回答问题前请先调用工具检索。
 工具选择策略：
 - 关系类问题（A 的师父 / A 和 B 的关系）→ 优先 graph_search

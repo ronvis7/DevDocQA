@@ -12,7 +12,6 @@ from neo4j import GraphDatabase
 
 from shared import settings
 
-
 QUERIES: list[tuple[str, str]] = [
     (
         "① 列出前 10 个实体及类型",
@@ -52,9 +51,7 @@ def main() -> None:
 
     # 拿一个真实存在的实体名做参数，否则 ② ③ ④ 全空
     with driver.session(database=settings.neo4j_database) as session:
-        sample = session.run(
-            "MATCH (e:Entity) RETURN e.name AS name LIMIT 1"
-        ).single()
+        sample = session.run("MATCH (e:Entity) RETURN e.name AS name LIMIT 1").single()
         if not sample:
             print("⚠️  图谱为空，请先跑 load_to_neo4j.py")
             return

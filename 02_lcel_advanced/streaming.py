@@ -14,10 +14,12 @@ from shared import get_llm
 
 
 def build_chain():
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "你是 1 名优秀的中文写作老师。"),
-        ("human", "{topic}"),
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "你是 1 名优秀的中文写作老师。"),
+            ("human", "{topic}"),
+        ]
+    )
     return prompt | get_llm(temperature=0.7) | StrOutputParser()
 
 
