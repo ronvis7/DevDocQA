@@ -1,0 +1,37 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Run pytest
+        # 不需要 DeepSeek 的测试都会跑；需要 API key 的会按现有 skipif 自动跳过
+        run: uv run pytest -v --tb=short
+        env:
+          # 让 HuggingFace 镜像可达（CI 在海外，hf-mirror 也能正常工作）
+          HF_ENDPOINT: https://hf-mirror.com
