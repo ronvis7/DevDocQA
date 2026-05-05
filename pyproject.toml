@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devdocqa"
+version = "0.2.0"
+description = "DevDocQA - LangChain + RAG 技术文档智能问答系统"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    # 核心 LangChain
+    "langchain>=1.2.0",
+    "langchain-core>=1.2.5",
+    "langchain-openai>=1.0.2",
+    "langchain-community>=0.4",
+    "langchain-text-splitters>=1.0",
+    # 向量库
+    "langchain-chroma>=0.2",
+    "chromadb>=0.5",
+    # Embedding：本地 HuggingFace 模型（无需第二个 API key）
+    "langchain-huggingface>=0.3",
+    "sentence-transformers>=3",
+    # 知识图谱（第 3-4 节）
+    "neo4j>=5.28",
+    "langchain-neo4j>=0.4",
+    # Agent（第 5 节）
+    "langgraph>=1.0.1",
+    # 文档解析
+    "pymupdf>=1.25",
+    "python-docx>=1.1",
+    # UI
+    "gradio>=5",
+    # 工具
+    "python-dotenv>=1.1",
+    "pydantic>=2.9",
+]
+
+[dependency-groups]
+test = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
+dev = [
+    "ruff>=0.6",
+]
+
+[tool.setuptools.packages.find]
+# 只把 shared 注册为安装包；以数字开头的目录不是合法 Python 标识符，
+# 但 editable 安装会把项目根目录加入 sys.path，importlib 仍能动态加载它们。
+where = ["."]
+include = ["shared*"]
+
+[tool.ruff]
+line-length = 120
+lint.select = ["F", "E", "W", "UP", "I"]
+
+[tool.pytest.ini_options]
+addopts = "-v --tb=short"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.uv]
+
+[[tool.uv.index]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
