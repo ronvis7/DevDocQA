@@ -2,10 +2,13 @@
 
 不调用 DeepSeek，只用本地 BGE embedding + Chroma 临时目录。
 首次运行会从 HuggingFace 下载 BGE 模型 (~100MB)；离线/超时会自动 skip。
+CI 环境（CI=true）默认跳过本测试，因为模型下载会拖慢 CI 流水线；
+本地开发跑 `pytest tests/test_e2e_basic.py -v` 验证。
 """
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -44,6 +47,10 @@ def has_embedding_model() -> bool:
         return False
 
 
+@pytest.mark.skipif(
+    os.getenv("CI") == "true",
+    reason="CI 环境跳过：BGE 模型下载会拖慢流水线，本地开发跑这个测试即可",
+)
 def test_e2e_ingest_and_retrieve(
     tmp_path: Path,
     mini_corpus: Path,

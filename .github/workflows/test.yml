@@ -10,7 +10,8 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 冷启动需装 PyTorch CPU + sentence-transformers (~1.5GB)，给足余量
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
